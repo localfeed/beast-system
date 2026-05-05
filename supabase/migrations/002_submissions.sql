@@ -6,7 +6,7 @@ create type submission_status as enum (
 );
 
 create table submissions (
-  id               uuid primary key default uuid_generate_v4(),
+  id               uuid primary key default gen_random_uuid(),
   client_id        uuid not null references clients(id) on delete cascade,
   video_url        text not null,
   status           submission_status not null default 'pending',

@@ -12,7 +12,7 @@ create type buffer_status as enum (
 );
 
 create table submission_outputs (
-  id               uuid primary key default uuid_generate_v4(),
+  id               uuid primary key default gen_random_uuid(),
   submission_id    uuid not null references submissions(id) on delete cascade,
   output_type      output_type not null,
   platform         text,                  -- null for shorts_breakdown (not platform-specific)

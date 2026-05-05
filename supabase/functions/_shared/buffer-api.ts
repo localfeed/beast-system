@@ -6,16 +6,13 @@ export async function scheduleBufferPost(opts: {
   mediaUrls?: string[];
   accessToken: string;
 }): Promise<{ success: boolean; id?: string; error?: string }> {
-  const body = new URLSearchParams({
-    profile_ids[]: opts.profileId,
-    text: opts.text,
-    access_token: opts.accessToken,
-  });
+  const body = new URLSearchParams();
+  body.append('profile_ids[]', opts.profileId);
+  body.append('text', opts.text);
+  body.append('access_token', opts.accessToken);
 
   if (opts.mediaUrls?.length) {
-    opts.mediaUrls.forEach((url, i) => {
-      body.append(`media[picture]`, url);
-    });
+    opts.mediaUrls.forEach((url) => body.append('media[picture]', url));
   }
 
   const res = await fetch(`${BUFFER_API}/updates/create.json`, {

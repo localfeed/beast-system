@@ -1,7 +1,5 @@
-create extension if not exists "uuid-ossp";
-
 create table clients (
-  id              uuid primary key default uuid_generate_v4(),
+  id              uuid primary key default gen_random_uuid(),
   slug            text unique not null,          -- used in submission URL: /submit/{slug}
   name            text not null,
   brand_voice     text not null default '',      -- Claude instructions for this client's tone/style
