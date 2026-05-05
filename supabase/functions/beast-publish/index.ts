@@ -37,7 +37,7 @@ serve(async (req) => {
       .eq('output_type', 'written_post')
       .eq('buffer_status', 'pending');
 
-    const bufferToken = Deno.env.get('BUFFER_ACCESS_TOKEN') ?? '';
+    const bufferToken = client.buffer_access_token;
 
     for (const output of (outputs ?? []) as SubmissionOutput[]) {
       const profileId = client.buffer_profiles[output.platform ?? ''];

@@ -1,14 +1,36 @@
+export interface VisualConfig {
+  primary_color: string;
+  secondary_color: string;
+  accent_color: string;
+  font: string;
+  template_style: string;
+  logo_url: string | null;
+}
+
+export interface ShortsConfig {
+  max_shorts: number;
+  target_duration_seconds: number;
+  platforms: string[];
+}
+
+export interface PostConfig {
+  [platform: string]: {
+    [postType: string]: number; // e.g. { posts: 3, carousels: 1 }
+  };
+}
+
 export interface Client {
   id: string;
   slug: string;
   name: string;
-  brand_voice: string;
+  audience: string;
+  tone_of_voice: string;
+  visual_config: VisualConfig;
   active_platforms: string[];
   buffer_profiles: Record<string, string>;
-  shorts_config: {
-    max_shorts?: number;
-    target_duration_seconds?: number;
-  };
+  buffer_access_token: string;
+  post_config: PostConfig;
+  shorts_config: ShortsConfig;
 }
 
 export interface Submission {
@@ -34,14 +56,4 @@ export interface SubmissionOutput {
   metadata: Record<string, unknown>;
   buffer_status: 'pending' | 'scheduled' | 'failed' | 'skipped';
   buffer_update_id?: string;
-}
-
-export interface GeneratePayload {
-  submission_id: string;
-  webhook_secret: string;
-}
-
-export interface PublishPayload {
-  submission_id: string;
-  webhook_secret: string;
 }
