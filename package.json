@@ -1,0 +1,15 @@
+{
+  "name": "beast-system",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "process": "node scripts/process-video.mjs",
+    "dashboard": "node scripts/pipeline-dashboard.mjs",
+    "deploy:functions": "supabase functions deploy beast-ingest && supabase functions deploy beast-generate && supabase functions deploy beast-publish"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@supabase/supabase-js": "^2.49.4",
+    "dotenv": "^16.5.0"
+  }
+}

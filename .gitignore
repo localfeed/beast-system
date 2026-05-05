@@ -1,0 +1,10 @@
+node_modules/
+.env
+.env.local
+.env.pipeline
+*.log
+.DS_Store
+dist/
+.supabase/
+supabase/.temp/
+scripts/fixtures/

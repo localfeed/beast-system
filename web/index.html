@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beast System — Submit a Video</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background: #141414;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 480px;
+    }
+    .logo { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .logo span { color: #ff6b35; }
+    .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+    label { display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem; }
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      margin-bottom: 1rem;
+    }
+    input:focus { border-color: #ff6b35; }
+    button {
+      width: 100%;
+      padding: 0.85rem;
+      background: #ff6b35;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .status.success { background: #0d2e1a; color: #4caf76; border: 1px solid #1a4a2a; }
+    .status.error { background: #2e0d0d; color: #f44; border: 1px solid #4a1a1a; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Beast <span>System</span></div>
+    <div class="subtitle">Paste your video link and we'll handle the rest.</div>
+
+    <form id="form">
+      <label for="url">Video URL (YouTube, Instagram, TikTok, etc.)</label>
+      <input id="url" type="url" placeholder="https://youtube.com/watch?v=..." required />
+      <button type="submit" id="btn">Submit for processing</button>
+    </form>
+
+    <div class="status" id="status"></div>
+  </div>
+
+  <script>
+    // Client slug is extracted from the URL path: /submit/{slug}
+    const slug = location.pathname.split('/').filter(Boolean).pop() ?? 'demo';
+    const SUPABASE_URL = 'REPLACE_WITH_SUPABASE_URL';
+    const ANON_KEY = 'REPLACE_WITH_SUPABASE_ANON_KEY';
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn');
+      const status = document.getElementById('status');
+      const url = document.getElementById('url').value.trim();
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting…';
+      status.style.display = 'none';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/beast-ingest`, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'apikey': ANON_KEY,
+            'authorization': `Bearer ${ANON_KEY}`,
+          },
+          body: JSON.stringify({ client_slug: slug, video_url: url }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? 'Submission failed');
+
+        status.className = 'status success';
+        status.textContent = `✓ Received! We're processing your video now. This usually takes 3–5 minutes.`;
+        status.style.display = 'block';
+        document.getElementById('url').value = '';
+      } catch (err) {
+        status.className = 'status error';
+        status.textContent = `Error: ${err.message}`;
+        status.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit for processing';
+      }
+    });
+  </script>
+</body>
+</html>
