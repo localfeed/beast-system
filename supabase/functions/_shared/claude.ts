@@ -15,7 +15,7 @@ export async function callClaude(opts: {
       'content-type': 'application/json',
     },
     body: JSON.stringify({
-      model: opts.model ?? 'claude-opus-4-7',
+      model: opts.model ?? 'claude-sonnet-4-6',
       max_tokens: opts.maxTokens ?? 8192,
       system: opts.system,
       messages: [{ role: 'user', content: opts.user }],
