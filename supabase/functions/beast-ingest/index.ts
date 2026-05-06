@@ -45,7 +45,7 @@ serve(async (req) => {
     if (subErr || !submission) throw subErr;
 
     // Trigger GitHub Actions to process the submission
-    const githubToken = Deno.env.get('GITHUB_TOKEN');
+    const githubToken = Deno.env.get('GH_PAT') ?? Deno.env.get('GITHUB_TOKEN');
     const githubRepo = Deno.env.get('GITHUB_REPO'); // e.g. localfeed/beast-system
     if (githubToken && githubRepo) {
       await fetch(`https://api.github.com/repos/${githubRepo}/dispatches`, {
